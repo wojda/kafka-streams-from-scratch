@@ -73,5 +73,7 @@ A: "Library vs Framework" + "Unix design principle of many small programs workin
 
 
 ## Materials
+1. [Kafka Consumer Javadoc](https://kafka.apache.org/10/javadoc/index.html?org/apache/kafka/clients/consumer/KafkaConsumer.html)
+1. [Kafka Producer Javadoc](https://kafka.apache.org/10/javadoc/index.html?org/apache/kafka/clients/producer/KafkaProducer.html)
 1. [Book - Kafka Streams in Action](https://www.manning.com/books/kafka-streams-in-action)
 
