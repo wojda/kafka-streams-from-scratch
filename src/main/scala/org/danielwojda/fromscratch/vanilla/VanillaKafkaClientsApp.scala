@@ -2,9 +2,9 @@ package org.danielwojda.fromscratch.vanilla
 
 import java.util.Properties
 
-import org.apache.kafka.clients.consumer.ConsumerConfig
-import org.apache.kafka.clients.consumer.KafkaConsumer
-import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig, ProducerRecord}
+import org.apache.kafka.clients.consumer.{ConsumerConfig, KafkaConsumer, OffsetAndMetadata}
+import org.apache.kafka.clients.producer._
+import org.apache.kafka.common.TopicPartition
 
 import scala.collection.JavaConverters._
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -42,7 +42,18 @@ object VanillaKafkaClientsApp {
 
         records.asScala.foreach(record => {
           val newValue = record.value().toUpperCase
-          producer.send(new ProducerRecord[String, String]("output", newValue))
+          producer.send(
+            new ProducerRecord[String, String]("output", newValue),
+            (metadata: RecordMetadata, exception: Exception) => {
+              if (exception == null) {
+                val topicPartition = new TopicPartition(metadata.topic(), metadata.partition())
+                val offsetAndMetadata = new OffsetAndMetadata(metadata.offset())
+                consumer.commitSync(Map(topicPartition -> offsetAndMetadata).asJava)
+              } else {
+                System.exit(-1) //What could possibly go wrong?
+              }
+
+            })
         })
 
       }
